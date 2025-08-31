@@ -1,0 +1,11 @@
+{
+    "name": "vba-code-snippets",
+    "version": "1.0.0",
+    "description": "Static website for VBA code snippets",
+    "scripts": {
+      "start": "http-server -p ${PORT:-8080} -a 0.0.0.0 --no-autoindex"
+    },
+    "dependencies": {
+      "http-server": "^14.1.1"
+    }
+  }

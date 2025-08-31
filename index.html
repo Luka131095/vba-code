@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VBA Code Snippets</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #000000; /* Black background */
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff; /* White header letters */
+        }
+        .code-window {
+            background-color: #1e1e1e;
+            border: 1px solid #ffffff; /* Thin white border */
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+        }
+        code {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>VBA Code Created Last Week Which Made My Work More Efficient</h1>
+    <div class="code-window">
+        <pre><code class="language-vb">
+' Sample VBA Code: Replace with your actual VBA code
+Sub CalculateCostSummary()
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Sheet1")
+    Dim lastRow As Long
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+    ws.Range("B" & lastRow + 1).Value = Application.WorksheetFunction.Sum(ws.Range("B2:B" & lastRow))
+    MsgBox "Cost summary calculated!", vbInformation
+End Sub
+        </code></pre>
+    </div>
+    <!-- Add more code windows as needed -->
+    <!--
+    <div class="code-window">
+        <pre><code class="language-vb">
+' Your next VBA code snippet here
+Sub YourNextMacro()
+    ' Add your code
+End Sub
+        </code></pre>
+    </div>
+    -->
+</body>
+</html>

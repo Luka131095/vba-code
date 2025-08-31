@@ -6,26 +6,107 @@
     <title>VBA Code Snippets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
+    <script>
+        // Initialize content state on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.getElementById('content');
+            content.classList.add('show'); // Default to visible
+            hljs.highlightAll(); // Ensure highlighting on load
+        });
+
+        // Toggle visibility with fade/dissolve effect
+        function toggleContent() {
+            const content = document.getElementById('content');
+            const button = document.querySelector('button');
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                content.classList.add('hide');
+                button.textContent = 'Show Code';
+            } else {
+                content.classList.remove('hide');
+                content.classList.add('show');
+                button.textContent = 'Show Nevera';
+                hljs.highlightAll(); // Reapply syntax highlighting
+            }
+        }
+    </script>
     <style>
+        @font-face {
+            font-family: 'TT Supermolot Neue';
+            src: url('TT Supermolot Neue.ttf') format('truetype'); /* Local .ttf file */
+        }
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #000000; /* Black background */
+            padding: 100px 20px 60px; /* Increased top padding for fixed header */
+            background: url('hypercar.jpg.avif') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+            padding: 10px 0;
+            display: flex;
+            justify-content: center; /* Center the flex container */
+            align-items: center;
+            height: 40px; /* Fixed height for consistency */
+        }
+        .header-content {
+            position: relative;
+            width: 100%;
+            max-width: 760px; /* Match body max-width minus padding */
+            text-align: center;
         }
         h1 {
-            text-align: center;
-            color: #ffffff; /* White header letters */
+            margin: 0;
+            color: #ffffff;
+            font-size: 32px;
+            display: inline-block;
+            font-family: "TT Supermolot Neue", Arial, sans-serif; /* Company font with fallback */
+        }
+        button {
+            position: absolute;
+            right: 40px; /* Slightly left from right edge */
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.1); /* Transparent background */
+            border: 1px solid #ffffff; /* White border */
+            border-radius: 5px; /* Filleted rectangle */
+            color: #ffffff;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            font-family: "TT Supermolot Neue", Arial, sans-serif; /* Company font with fallback */
+        }
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Slight hover effect */
+        }
+        #content {
+            opacity: 1; /* Default state: fully visible */
+            transition: opacity 0.5s; /* Fade/dissolve effect */
+        }
+        #content.show {
+            opacity: 1;
+        }
+        #content.hide {
+            opacity: 0;
         }
         .code-window {
-            background-color: #1e1e1e;
+            background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent dark background */
             border: 1px solid #ffffff; /* Thin white border */
             border-radius: 5px;
             padding: 15px;
             margin: 20px 0;
             overflow-x: auto;
+            z-index: 1000;
         }
         pre {
             margin: 0;
@@ -33,33 +114,205 @@
         code {
             font-size: 14px;
         }
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+            font-size: 20px;
+            font-family: "TT Supermolot Neue", Arial, sans-serif; /* Company font with fallback */
+        }
     </style>
 </head>
 <body>
-    <h1>VBA Code Created Last Week Which Made My Work More Efficient</h1>
-    <div class="code-window">
-        <pre><code class="language-vb">
-' Sample VBA Code: Replace with your actual VBA code
-Sub CalculateCostSummary()
+    <header>
+        <div class="header-content">
+            <h1>Examples of VBA code at my current role</h1>
+        </div>
+        <button onclick="toggleContent()">Show Nevera</button>
+    </header>
+    <div id="content">
+        <div class="code-window">
+            <pre><code class="language-vb">
+Sub CopyRowsBasedOnConcat()
+    Dim sources As Variant
+    sources = Array("Prilog D.9-S09", "Prilog D.10-S10", "Prilog D.11-S11", "Prilog D.12-S12", "Prilog D.13-S13", "Prilog D.15-S15")
+    
+    Dim dest As Worksheet
+    Set dest = ThisWorkbook.Sheets("Sheet1")
+    
     Dim ws As Worksheet
-    Set ws = ThisWorkbook.Sheets("Sheet1")
+    Dim lastRow As Long, i As Long, lastCol As Long
+    Dim destRow As Long
+    
+    ' Find the next available row in Sheet1 (append mode)
+    destRow = dest.Cells(dest.Rows.Count, "A").End(xlUp).Row + 1
+    
+    Dim src As Variant
+    For Each src In sources
+        Set ws = ThisWorkbook.Sheets(src)
+        
+        ' Find last row based on column G
+        lastRow = ws.Cells(ws.Rows.Count, "G").End(xlUp).Row
+        
+        ' Find last column based on row 1 (assuming headers define structure)
+        lastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
+        
+        ' Loop through rows, starting from 2 (assuming row 1 is headers)
+        For i = 2 To lastRow
+            If ws.Cells(i, 7).HasFormula And InStr(1, ws.Cells(i, 7).Formula, "CONCAT", vbTextCompare) > 0 Then
+                ' Copy the range from source
+                ws.Range(ws.Cells(i, 1), ws.Cells(i, lastCol)).Copy
+                
+                ' Paste values and number formats to destination
+                dest.Cells(destRow, 1).PasteSpecial xlPasteValuesAndNumberFormats
+                
+                ' Add source sheet name in the next column
+                dest.Cells(destRow, lastCol + 1).Value = ws.Name
+                
+                ' Increment destination row
+                destRow = destRow + 1
+            End If
+        Next i
+    Next src
+    
+    ' Clear clipboard
+    Application.CutCopyMode = False
+End Sub
+            </code></pre>
+        </div>
+        <div class="code-window">
+            <pre><code class="language-vb">
+Sub LinkValuesFromSheet2()
+    Dim sources As Variant
+    sources = Array("Prilog D.9-S09", "Prilog D.10-S10", "Prilog D.11-S11", "Prilog D.12-S12", "Prilog D.13-S13", "Prilog D.15-S15")
+    
+    Dim src As Worksheet
+    Set src = ThisWorkbook.Sheets("Sheet2")
+    
+    Dim ws As Worksheet
+    Dim lastRowSrc As Long, lastRowDest As Long, i As Long, j As Long
+    Dim key As Variant
+    Dim matchFound As Boolean
+    
+    ' Find last row in Sheet2
+    lastRowSrc = src.Cells(src.Rows.Count, "A").End(xlUp).Row
+    
+    ' Loop through each destination sheet
+    Dim destName As Variant
+    For Each destName In sources
+        Set ws = ThisWorkbook.Sheets(destName)
+        
+        ' Find last row in destination based on column G
+        lastRowDest = ws.Cells(ws.Rows.Count, "G").End(xlUp).Row
+        
+        ' Loop through each row in Sheet2
+        For i = 2 To lastRowSrc ' Assuming headers in row 1
+            key = src.Cells(i, 1).Value
+            If key <> "" Then
+                matchFound = False
+                ' Search for match in destination column G
+                For j = 2 To lastRowDest ' Assuming data starts at row 2
+                    If ws.Cells(j, 7).Value = key Then
+                        ' Set formula in column K pointing to Sheet2 column E
+                        ws.Cells(j, 11).Formula = "=Sheet2!" & src.Cells(i, 5).Address(RowAbsolute:=False, ColumnAbsolute:=False)
+                        
+                        ' Set formula in column O pointing to Sheet2 column G
+                        ws.Cells(j, 15).Formula = "=Sheet2!" & src.Cells(i, 7).Address(RowAbsolute:=False, ColumnAbsolute:=False)
+                        
+                        matchFound = True
+                    End If
+                Next j
+                ' Optional: If no match, could log or skip
+            End If
+        Next i
+    Next destName
+End Sub
+            </code></pre>
+        </div>
+        <div class="code-window">
+            <pre><code class="language-vb">
+Sub AggregateUniqueItems()
+    Dim ws1 As Worksheet, ws2 As Worksheet
+    Set ws1 = ThisWorkbook.Sheets("Sheet1")
+    Set ws2 = ThisWorkbook.Sheets("Sheet2")
+    
+    Dim dict As Object
+    Set dict = CreateObject("Scripting.Dictionary")
+    
     Dim lastRow As Long
-    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
-    ws.Range("B" & lastRow + 1).Value = Application.WorksheetFunction.Sum(ws.Range("B2:B" & lastRow))
-    MsgBox "Cost summary calculated!", vbInformation
+    lastRow = ws1.Cells(ws1.Rows.Count, "A").End(xlUp).Row
+    
+    Dim i As Long
+    Dim key As Variant
+    Dim subDict As Object
+    
+    ' Scan through rows in Sheet1
+    For i = 2 To lastRow ' Assuming row 1 is headers
+        key = ws1.Cells(i, 1).Value
+        If key <> "" Then ' Skip empty cells
+            If Not dict.Exists(key) Then
+                ' Create new dictionary entry for unique key
+                Set subDict = CreateObject("Scripting.Dictionary")
+                subDict.Add "B", ws1.Cells(i, 2).Value
+                subDict.Add "D", ws1.Cells(i, 4).Value
+                subDict.Add "F", ws1.Cells(i, 6).Value
+                subDict.Add "sumC", ws1.Cells(i, 3).Value
+                subDict.Add "minE", IIf(ws1.Cells(i, 5).Value > 0, ws1.Cells(i, 5).Value, 999999999#) ' Large number for min comparison
+                subDict.Add "minG", IIf(ws1.Cells(i, 7).Value > 0, ws1.Cells(i, 7).Value, 999999999#)
+                subDict.Add "Ilist", ws1.Cells(i, 9).Value
+                dict.Add key, subDict
+            Else
+                ' Update existing entry for duplicate key
+                Set subDict = dict(key)
+                subDict("sumC") = subDict("sumC") + ws1.Cells(i, 3).Value
+                If ws1.Cells(i, 5).Value > 0 And ws1.Cells(i, 5).Value < subDict("minE") Then
+                    subDict("minE") = ws1.Cells(i, 5).Value
+                End If
+                If ws1.Cells(i, 7).Value > 0 And ws1.Cells(i, 7).Value < subDict("minG") Then
+                    subDict("minG") = ws1.Cells(i, 7).Value
+                End If
+                If ws1.Cells(i, 9).Value <> "" Then
+                    If subDict("Ilist") <> "" Then
+                        subDict("Ilist") = subDict("Ilist") & ";" & ws1.Cells(i, 9).Value
+                    Else
+                        subDict("Ilist") = ws1.Cells(i, 9).Value
+                    End If
+                End If
+            End If
+        End If
+    Next i
+    
+    ' Clear Sheet2 content below headers
+    ws2.Range("A2:I" & ws2.Rows.Count).ClearContents
+    
+    ' Write results to Sheet2
+    Dim destRow As Long
+    destRow = 2 ' Start after headers
+    
+    For Each key In dict.Keys
+        Set subDict = dict(key)
+        ws2.Cells(destRow, 1).Value = key
+        ws2.Cells(destRow, 2).Value = subDict("B")
+        ws2.Cells(destRow, 3).Value = subDict("sumC")
+        ws2.Cells(destRow, 4).Value = subDict("D")
+        ws2.Cells(destRow, 5).Value = IIf(subDict("minE") < 999999999#, subDict("minE"), 0)
+        ws2.Cells(destRow, 6).Value = subDict("F")
+        ws2.Cells(destRow, 7).Value = IIf(subDict("minG") < 999999999#, subDict("minG"), 0)
+        ws2.Cells(destRow, 9).Value = subDict("Ilist")
+        destRow = destRow + 1
+    Next key
 End Sub
-        </code></pre>
+            </code></pre>
+        </div>
     </div>
-    <!-- Add more code windows as needed -->
-    <!--
-    <div class="code-window">
-        <pre><code class="language-vb">
-' Your next VBA code snippet here
-Sub YourNextMacro()
-    ' Add your code
-End Sub
-        </code></pre>
-    </div>
-    -->
+    <footer>
+        VBA code by Luka Vrzogic
+    </footer>
 </body>
 </html>
